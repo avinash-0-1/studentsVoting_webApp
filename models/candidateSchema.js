@@ -15,14 +15,22 @@ const candidateSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    role:{
-        type:String,
-        required:true,
-        enum:["voter,admin"]
-    },
-    isVoted:{
-        type:Boolean,
-        default:false,
+    vote:[
+        {
+            user:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"User",
+                required:true
+            },
+            votedAt:{
+                type:Date,
+                default:Date.now()
+            }
+        }
+    ],
+    voteCount:{
+        type:Number,
+        default:0,
     }
 })
 
