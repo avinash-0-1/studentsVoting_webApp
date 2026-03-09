@@ -7,15 +7,11 @@ const candidateSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    id:{
+    party:{
         type:String,
         required:true
     },
-    username:{
-        type:String,
-        required:true
-    },
-    password:{
+    age:{
         type:String,
         required:true
     },
