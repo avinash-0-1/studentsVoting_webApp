@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt"
 
 
-const userSchema = mongoose.Schema({
+const candidateSchema = mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -30,5 +30,5 @@ const userSchema = mongoose.Schema({
     }
 })
 
-const userModel = mongoose.model('userSchema',userSchema)
-export default userModel
+const candidateModel = mongoose.model('candidateSchema',candidateSchema)
+export default candidateModel;
