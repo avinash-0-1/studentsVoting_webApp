@@ -47,4 +47,4 @@ An **Admin panel** is included to manage the election process, such as adding, u
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/student-voting-app.git
+git clone https://github.com/avinash-0-1/student-voting-app.git

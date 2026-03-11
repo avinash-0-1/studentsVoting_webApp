@@ -30,8 +30,33 @@ route.post('/login', async (req, res) => {
 
 })
 
+route.post('/signup', async (req, res) => {
+    try {
+        const data = req.body
+        const newData = new userModel(data)
+        const response = await newData.save()
 
+        const payload = {
+            id: response.id,
+            username: response.username
+        }
 
+        const token = generateToken(payload)
+        req.userPayload(token)
+        res.status(200).json({ response: response, token: token })
+    } catch (error) {
+        res.status(500).json({ message: "Server Side ERROR" })
+    }
+})
 
+route.get('profile', async (req,res) => {
+    try {
+        const id = req.user.id
+        const response = await userModel.findById(id)
+        res.json({ response })
+    } catch (error) {
+        res.status(500).json({ message: "server side ERROR" })
+    }
+})
 
 export default route
