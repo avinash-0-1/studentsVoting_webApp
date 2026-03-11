@@ -12,7 +12,7 @@ route.post('/login', async (req, res) => {
         if (!username) {
             return res.send('Invalid username')
         }
-        const isMatchPass = user.comparePass(password)
+        const isMatchPass = await user.comparePass(password)
         if (!isMatchPass) {
             return res.send('Invalid Password')
         }
@@ -38,7 +38,6 @@ route.post('/signup', async (req, res) => {
 
         const payload = {
             id: response.id,
-            username: response.username
         }
 
         const token = generateToken(payload)
