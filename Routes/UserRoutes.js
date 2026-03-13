@@ -48,7 +48,7 @@ route.post('/signup', async (req, res) => {
     }
 })
 
-route.get('/profile', async (req,res) => {
+route.get('/profile', async (req, res) => {
     try {
         const id = req.user.id
         const response = await userModel.findById(id)
@@ -58,8 +58,20 @@ route.get('/profile', async (req,res) => {
     }
 })
 
-route.put('/profile/passwordupdate',async(req,res)=>{
-    
+route.put('/profile/passwordupdate', async (req, res) => {
+    try {
+        const userId = req.user.id
+        const { currentpassword, newpassword } = req.body
+        const user = await userModel.findById(userId)
+        const isMatchPass = await user.comparePassword(currentpassword)
+        if (!isMatchPass) {
+            res.status(401).json({ message: "Invalid Password" })
+        }
+        user.password = newpassword
+        await user.save()
+    } catch (error) {
+        res.status(500).json({ message: 'Server side ERROR' })
+    }
 })
 
 export default route
