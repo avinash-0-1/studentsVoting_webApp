@@ -12,7 +12,7 @@ route.post('/login', async (req, res) => {
         if (!username) {
             return res.send('Invalid username')
         }
-        const isMatchPass = await user.comparePass(password)
+        const isMatchPass = await user.comparePassword(password)
         if (!isMatchPass) {
             return res.send('Invalid Password')
         }
@@ -48,7 +48,7 @@ route.post('/signup', async (req, res) => {
     }
 })
 
-route.get('profile', async (req,res) => {
+route.get('/profile', async (req,res) => {
     try {
         const id = req.user.id
         const response = await userModel.findById(id)
@@ -56,6 +56,10 @@ route.get('profile', async (req,res) => {
     } catch (error) {
         res.status(500).json({ message: "server side ERROR" })
     }
+})
+
+route.put('/profile/passwordupdate',async(req,res)=>{
+    
 })
 
 export default route

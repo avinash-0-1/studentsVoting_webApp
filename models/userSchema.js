@@ -29,6 +29,7 @@ const userSchema = mongoose.Schema({
         default:false,
     }
 })
+
 //hashing password
 userSchema.pre('save',async function(){
     if(!this.password.isModified('password')){
@@ -39,8 +40,9 @@ userSchema.pre('save',async function(){
     this.password = hashedPass
     next()
 })
+
 //verification of hashed password
-userSchema.methods.comparePass = async function(pass){
+userSchema.methods.comparePassword = async function(pass){
     try {
         const isMatchPass = await bcrypt.compare(pass,this.password)
         return isMatchPass
