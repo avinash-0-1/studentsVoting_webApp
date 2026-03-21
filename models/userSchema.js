@@ -21,8 +21,8 @@ const userSchema = mongoose.Schema({
     },
     role:{
         type:String,
-        required:true,
-        enum:["voter,admin"]
+        enum:["voter","admin"],
+        default:'voter'
     },
     isVoted:{
         type:Boolean,
@@ -32,13 +32,12 @@ const userSchema = mongoose.Schema({
 
 //hashing password
 userSchema.pre('save',async function(){
-    if(!this.password.isModified('password')){
+    if(!this.isModified('password')){
         return
     }
     const genSalt = await bcrypt.genSalt(10)
     const hashedPass = await bcrypt.hash(this.password,genSalt)
     this.password = hashedPass
-    next()
 })
 
 //verification of hashed password
