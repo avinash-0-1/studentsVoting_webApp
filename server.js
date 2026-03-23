@@ -14,6 +14,8 @@ app.use(express.urlencoded({extended:true}))
 
 app.use('/user',userRoute)
 app.use('/candidate',candidateRoute)
+//app.use('/admin',adminRoute)
+
 
 
 app.listen(3000,()=>{

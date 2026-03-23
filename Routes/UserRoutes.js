@@ -4,12 +4,12 @@ import { jwtMiddleware , generateToken } from '../jwt.js'
 
 const userRoute = express.Router()
 
-userRoute.post('/login', async (req, res) => {
+userRoute.post('/login',async (req, res) => {
     try {
         const { username, password } = req.body
         const user = await userModel.findOne({ username: username })
 
-        if (!username) {
+        if (!user) {
             return res.send('Invalid username')
         }
         const isMatchPass = await user.comparePassword(password)
@@ -18,7 +18,7 @@ userRoute.post('/login', async (req, res) => {
         }
 
         const payload = {
-            id: user.id,
+            id: user._id,
             username: user.username
         }
 
@@ -37,11 +37,11 @@ userRoute.post('/signup', async (req, res) => {
         const response = await newData.save()
 
         const payload = {
-            id: response.id,
+            id: response._id,
         }
 
         const token = generateToken(payload)
-        
+
         res.status(200).json({ response: response, token: token })
     } catch (error) {
         console.log(error,"ERROR")
@@ -49,7 +49,7 @@ userRoute.post('/signup', async (req, res) => {
     }
 })
 
-userRoute.get('/profile', async (req, res) => {
+userRoute.get('/profile',jwtMiddleware,async (req, res) => {
     try {
         const id = req.user.id
         const response = await userModel.findById(id)
@@ -59,14 +59,14 @@ userRoute.get('/profile', async (req, res) => {
     }
 })
 
-userRoute.put('/profile/passwordupdate', async (req, res) => {
+userRoute.put('/profile/passwordupdate',jwtMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id   // ye "req.user.id" JWT ka token verification wala user hai..!! 
+        const userId = req.user.id   // ye "req.user.id" JWT ka token verification wala 'user' hai..!! 
         const { currentpassword, newpassword } = req.body
         const user = await userModel.findById(userId)
         const isMatchPass = await user.comparePassword(currentpassword)
         if (!isMatchPass) {
-            res.status(401).json({ message: "Invalid Password" })
+           return res.status(401).json({ message: "Invalid Password" })
         }
         user.password = newpassword
         await user.save()

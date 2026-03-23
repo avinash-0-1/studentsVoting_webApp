@@ -1,26 +1,34 @@
 import express from 'express';
 import candidateModel from '../models/candidateSchema.js'
+import userModel from '../models/userSchema.js';
+import { jwtMiddleware } from '../jwt.js';
+
 
 const candidateRoute = express.Router()
 
 //cheacking the role of the if user if he is admin or not ?
 const checkRoleForAdmin = async (userId) => {
-    const candidate = await candidateModel.findById(userId)
-    const temp = candidate.role === "admin" ? true : false
-    return temp
+    const user = await userModel.findById(userId)
+    console.log("USER ROLE:", user.role)
+     if (!user){ return false}
+    return user.role === "admin";
 }
 
 //creating new candidate for election & save it into the DB
-candidateRoute.post('/candidatepost', async (req, res) => {
+candidateRoute.post('/candidatepost',jwtMiddleware, async (req, res) => {
     try {
-        if (!(await checkRoleForAdmin(req.body.id))) {
-            return res.status(403).json({ message: "you'r not the admin !!" })
+        const { name, party, age } = req.body; // for secure the candidates records by securing the isVoted field so that isVoted can't be manipulated
+
+        if (!(await checkRoleForAdmin(req.user.id))) {
+            return res.status(403).json({ message: "you're not the admin !!" })
         }
-        const data = req.body
-        const newData = new candidateModel(data)
+        
+        const newData = new candidateModel({name, party, age })
         const response = await newData.save()
-        res.json({ message: 'updated!' })
+        
+        res.json({ response:response , message: 'new Candidate Added !' })
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Server Side ERROR" })
     }
 })
@@ -28,7 +36,7 @@ candidateRoute.post('/candidatepost', async (req, res) => {
 candidateRoute.put('/candidateupdate:id', async (req, res) => {
     try {
         if (!(await checkRoleForAdmin(req.body.id))) {
-            return res.status(403).json({ message: "you'r not the admin !!" })
+            return res.status(403).json({ message: "you're not the admin !!" })
         }
 
         const id = req.params.id;

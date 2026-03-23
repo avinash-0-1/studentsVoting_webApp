@@ -23,6 +23,7 @@ const jwtMiddleware = (req, res, next) => {
     try {
         const encodedPayload = jwt.verify(bearerToken, process.env.jwtkey)
         req.user = encodedPayload
+        console.log(user)
         next()
     } catch (error) {
         res.status(500).json({ message: 'server side ERROR' })
