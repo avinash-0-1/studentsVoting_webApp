@@ -22,7 +22,7 @@ An **Admin panel** is included to manage the election process, such as adding, u
 
 ## Tech Stack
 
-**Frontend**
+**Frontend** [In Progress 🚧]
 - React.js
 - HTML5
 - CSS3
