@@ -12,7 +12,7 @@ const generateToken = (payload) => {
 const jwtMiddleware = (req, res, next) => {
     const authentication = req.headers.authorization
     if (!authentication) {
-        return res.status(401).json({ message: "Unauthorized" })
+        return res.status(401).json({ message: "Unauthorized !" })
     }
 
     const bearerToken = req.headers.authorization.split(' ')[1]
@@ -23,10 +23,10 @@ const jwtMiddleware = (req, res, next) => {
     try {
         const encodedPayload = jwt.verify(bearerToken, process.env.jwtkey)
         req.user = encodedPayload
-        console.log(user)
         next()
     } catch (error) {
-        res.status(500).json({ message: 'server side ERROR' })
+        console.log(error)
+        res.status(500).json({ message: 'server side ERROR !!' })
     }
 }
 

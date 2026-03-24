@@ -2,7 +2,6 @@ import express from 'express';
 import candidateModel from '../models/candidateSchema.js'
 import userModel from '../models/userSchema.js';
 import { jwtMiddleware } from '../jwt.js';
-import { use } from 'react';
 
 
 const candidateRoute = express.Router()
@@ -72,8 +71,8 @@ candidateRoute.delete('/candidatedelete:id', async (req, res) => {
 })
 //======================================= VOTING LOGIC ==================================
 
-candidateRoute.post('vote/candidateID', async (req, res) => {
-    const candidateID = req.params.id;
+candidateRoute.post('/vote/:candidateID', jwtMiddleware, async (req, res) => {
+    const candidateID = req.params.candidateID;
     const userID = req.user.id;
 
     try {
@@ -85,7 +84,7 @@ candidateRoute.post('vote/candidateID', async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "user not found !" })
         }
-        if (user.role == "admin") {
+        if (user.role === "admin") {
             return res.status(403).json({ message: "Admin are Not Allowed to vote" })
         }
         if (user.isVoted) {
@@ -104,10 +103,42 @@ candidateRoute.post('vote/candidateID', async (req, res) => {
         res.status(200).json({ message: "Vote is Recorded Successfully !!" })
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Server side ERROR" })
     }
 })
 
-//================ 
+//================ vote count ======================
+candidateRoute.get('/vote/count', async (req, res) => {
+    try {
+        const candidate = await candidateModel.find().sort({ voteCount: 'desc' })
+
+        const voteRecord = candidate.map((data) => {
+            return {
+                party: data.party,
+                voteCount: data.voteCount
+            }
+        });
+
+        return res.status(200).json({ voteRecord: voteRecord })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Server Side ERROR' })
+    }
+})
+//========================= all candidate list only name and party =====================
+
+candidateRoute.get('/', async (req, res) => {
+    try {
+        // Find all candidates and select only the name and party fields, excluding _id
+        const candidates = await candidateModel.find({}, 'name party -_id');
+
+        // Return the list of candidates
+        res.status(200).json(candidates);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 export default candidateRoute
