@@ -33,7 +33,7 @@ candidateRoute.post('/candidatepost', jwtMiddleware, async (req, res) => {
     }
 })
 
-candidateRoute.put('/candidateupdate:id', async (req, res) => {
+candidateRoute.put('/candidateupdate/:id', async (req, res) => {
     try {
         if (!(await checkRoleForAdmin(req.body.id))) {
             return res.status(403).json({ message: "you're not the admin !!" })
@@ -57,7 +57,7 @@ candidateRoute.put('/candidateupdate:id', async (req, res) => {
     }
 })
 
-candidateRoute.delete('/candidatedelete:id', async (req, res) => {
+candidateRoute.delete('/candidatedelete/:id', async (req, res) => {
     try {
         if (!(await checkRoleForAdmin(req.body.id))) {
             return res.status(403).json({ message: "you'r not the admin !!" })
