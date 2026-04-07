@@ -7,3 +7,16 @@ import Admin from "./pages/admin.jsx";
 
 
 
+function App(){
+  return (
+    <>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Login/>}/>
+    </Routes>
+    </BrowserRouter>
+    </>
+  );
+}
+
+export default App
