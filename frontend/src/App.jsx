@@ -7,14 +7,21 @@ import Admin from "./pages/admin.jsx";
 
 
 
-function App(){
+function App() {
   return (
     <>
-    <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Login/>}/>
-    </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+
+          <Route path="/vote" element={
+            <PrivateRoute>
+              <Results />
+            </PrivateRoute>
+          } />
+
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
