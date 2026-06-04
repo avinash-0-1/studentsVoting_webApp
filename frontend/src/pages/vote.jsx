@@ -7,11 +7,21 @@ function Vote() {
   const [candidates, setCandidates] = useState([]);
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [electionActive, setElectionActive] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCandidates();
     checkUser();
+    checkElection();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkElection();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchCandidates = async () => {
@@ -25,10 +35,22 @@ function Vote() {
     }
   };
 
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  navigate("/"); // go back to login
-};
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/"); // go back to login
+  };
+  // -------------------------------------------
+  const checkElection = async () => {
+    try {
+      const res = await API.get("/candidate/election/status");
+
+      setElectionActive(res.data.isActive);
+
+    } catch (err) {
+      console.log("Election check failed");
+    }
+  };
+  // ------------------------------------------
 
   const checkUser = async () => {
     try {
@@ -42,13 +64,28 @@ const handleLogout = () => {
   const handleVote = async (id) => {
     if (!id) return alert("Invalid candidate");
 
+    await checkElection();
+
+    if (!electionActive) {
+      return alert("Election is not active");
+    }
+
     try {
       await API.post(`/candidate/vote/${id}`);
       alert("Vote successful");
 
-      setHasVoted(true); //disable instantly
+      setHasVoted(true);
     } catch (err) {
-      alert(err.response?.data?.message);
+      const message = err.response?.data?.message;
+
+      if (
+        message === "Election has ended" ||
+        message === "Election has not started yet"
+      ) {
+        setHasVoted(true);
+      }
+
+      alert(message || "Vote failed");
     }
   };
 
@@ -56,7 +93,20 @@ const handleLogout = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ textAlign: "center" }}>Vote Now</h2>
+      <h2 style={{ textAlign: "center" }}>🗳️ Vote Now</h2>
+
+      {!electionActive && (
+        <div style={{
+          backgroundColor: "#ffe6e6",
+          padding: "10px",
+          borderRadius: "8px",
+          textAlign: "center",
+          margin: "10px 0"
+        }}>
+          Election is not active
+        </div>
+      )}
+
       <button onClick={handleLogout}>Logout</button>
       <a href="/results">View Results</a>
 
@@ -81,8 +131,7 @@ const handleLogout = () => {
           >
             <h3>{c.name}</h3>
             <p>{c.party}</p>
-
-            <button
+            {/* <button
               onClick={() => handleVote(c._id)}
               disabled={hasVoted}
               style={{
@@ -95,6 +144,24 @@ const handleLogout = () => {
               }}
             >
               {hasVoted ? "Already Voted" : "Vote"}
+            </button> */}
+            <button
+              onClick={() => handleVote(c._id)}
+              disabled={hasVoted || !electionActive}
+              style={{
+                padding: "10px 15px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: (hasVoted || !electionActive) ? "not-allowed" : "pointer",
+                backgroundColor: (hasVoted || !electionActive) ? "gray" : "#4CAF50",
+                color: "white",
+              }}
+            >
+              {hasVoted
+                ? "Already Voted"
+                : !electionActive
+                  ? "Election Closed"
+                  : "Vote"}
             </button>
           </div>
         ))}
