@@ -4,7 +4,7 @@ import Vote from "./pages/vote.jsx";
 import Results from "./pages/result.jsx";
 import PrivateRoute from "./components/privateRoute.jsx";
 import Admin from "./pages/admin.jsx";
-
+import Signup from "./pages/signup";
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/signup" element={<Signup />} />
         <Route
           path="/results"
           element={
