@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema({
     isVoted:{
         type:Boolean,
         default:false,
+    },
+    firstLogin: {
+        type: Boolean,
+        default: false
     }
 })
 

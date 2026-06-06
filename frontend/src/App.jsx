@@ -4,7 +4,8 @@ import Vote from "./pages/vote.jsx";
 import Results from "./pages/result.jsx";
 import PrivateRoute from "./components/privateRoute.jsx";
 import Admin from "./pages/admin.jsx";
-import Signup from "./pages/signup";
+import Signup from "./pages/signup.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/signup" element={<Signup />} />
         <Route
           path="/results"
