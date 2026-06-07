@@ -12,6 +12,9 @@ function AdminSetup() {
     });
 
     const handleSave = async () => {
+        if (!form.username || !form.password) {
+            return alert("Please fill all fields");
+        }
 
         try {
 

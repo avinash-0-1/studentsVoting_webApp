@@ -90,4 +90,38 @@ userRoute.put('/profile/passwordupdate', jwtMiddleware, async (req, res) => {
     }
 })
 
+// ------------------------------------- Admin ----------------------------------------------------
+
+userRoute.put("/admin/setup",jwtMiddleware,async (req, res) => {
+        try {
+            const { username, password } = req.body;
+            const admin = await userModel.findById(req.user.id);
+
+            if (!admin) {
+                return res.status(404).json({
+                    message: "Admin not found"
+                });
+            }
+
+            admin.username = username;
+            admin.password = password;
+            admin.firstLogin = false;
+
+            await admin.save();
+
+            res.status(200).json({
+                message: "Admin credentials updated"
+            });
+
+        } catch (error) {
+
+            console.log(error);
+
+            res.status(500).json({
+                message: "Server Error"
+            });
+        }
+    }
+);
+
 export default userRoute

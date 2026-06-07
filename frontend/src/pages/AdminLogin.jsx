@@ -10,26 +10,45 @@ function AdminLogin() {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const res = await API.post("/user/login", data);
+ const handleLogin = async () => {
+  try {
 
-      localStorage.setItem("token", res.data.token);
+    const res = await API.post("/user/login", data);
 
-      const profile = await API.get("/user/profile");
+    localStorage.setItem("token", res.data.token);
+    
 
-      if (profile.data.response.role !== "admin") {
-        localStorage.removeItem("token");
-        return alert("Not an admin account");
-      }
-
-      alert("Admin Login Success ✅");
-      navigate("/admin");
-
-    } catch (err) {
-      alert("Admin Login Failed");
+//===== check if account is admin =====================
+    if (res.data.role !== "admin") {
+      localStorage.removeItem("token");
+      return alert("Not an admin account");
     }
-  };
+
+
+// ==================== first login hai ? ========================================
+    if (res.data.firstLogin) {
+
+      alert("Please change default admin credentials");
+
+      navigate("/admin-setup");
+
+    } else {
+
+      alert("Admin Login Success ");
+
+      navigate("/admin");
+    }
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Admin Login Failed"
+    );
+  }
+};
 
   return (
     <div>
