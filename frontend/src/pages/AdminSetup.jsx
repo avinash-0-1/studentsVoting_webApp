@@ -18,10 +18,7 @@ function AdminSetup() {
 
         try {
 
-            await API.put(
-                "/user/admin/setup",
-                form
-            );
+            await API.put("/user/admin/setup",form);
 
             alert("Credentials Updated");
 
@@ -43,10 +40,7 @@ function AdminSetup() {
             <input
                 placeholder="New Username"
                 onChange={(e) =>
-                    setForm({
-                        ...form,
-                        username: e.target.value
-                    })
+                    setForm({...form,username: e.target.value})
                 }
             />
 
@@ -54,10 +48,7 @@ function AdminSetup() {
                 type="password"
                 placeholder="New Password"
                 onChange={(e) =>
-                    setForm({
-                        ...form,
-                        password: e.target.value
-                    })
+                    setForm({...form,password: e.target.value})
                 }
             />
 

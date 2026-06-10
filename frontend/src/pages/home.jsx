@@ -14,7 +14,7 @@ function Home() {
         gap: "15px"
       }}
     >
-      <h1>🗳️ College Election Voting System</h1>
+      <h1>College Election Voting System</h1>
 
       <button
         onClick={() => navigate("/login")}
