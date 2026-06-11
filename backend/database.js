@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const url = "mongodb://127.0.0.1:27017/voting_app"
+dotenv.config();
+
+const url = process.env.MONGO_URL
 mongoose.connect(url)
 
 const db = mongoose.connection
