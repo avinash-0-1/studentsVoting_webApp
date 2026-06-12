@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "https://studentsvoting-webapp.onrender.com", //https://studentsvoting-webapp.onrender.com
+                                                          //http://localhost:3000/
 });
 
 API.interceptors.request.use((req) => {
