@@ -1,10 +1,7 @@
 import axios from "axios";
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const API = axios.create({
-  baseURL: process.env.RENDER,
+  baseURL: import.meta.env.VITE_RENDER,
 });
 
 API.interceptors.request.use((req) => {
