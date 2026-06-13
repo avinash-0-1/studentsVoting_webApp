@@ -7,7 +7,7 @@ function Vote() {
   const [candidates, setCandidates] = useState([]);
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [electionActive, setElectionActive] = useState(false);
+  const [electionStatus, setElectionStatus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,12 +42,17 @@ function Vote() {
   // -------------------------------------------
   const checkElection = async () => {
     try {
-      const res = await API.get("/candidate/election/status");
+      const res = await API.get(
+        "/candidate/election/status"
+      );
 
-      setElectionActive(res.data.isActive);
+      setElectionStatus(res.data);
+
+      return res.data;
 
     } catch (err) {
       console.log("Election check failed");
+      return null;
     }
   };
   // ------------------------------------------
@@ -64,10 +69,14 @@ function Vote() {
   const handleVote = async (id) => {
     if (!id) return alert("Invalid candidate");
 
-    await checkElection();
+    const currentElection = await checkElection();
 
-    if (!electionActive) {
-      return alert("Election is not active");
+    if (
+      currentElection?.status !== "Active"
+    ) {
+      return alert(
+        `Election is ${currentElection?.status}`
+      );
     }
 
     try {
@@ -77,14 +86,6 @@ function Vote() {
       setHasVoted(true);
     } catch (err) {
       const message = err.response?.data?.message;
-
-      if (
-        message === "Election has ended" ||
-        message === "Election has not started yet"
-      ) {
-        setHasVoted(true);
-      }
-
       alert(message || "Vote failed");
     }
   };
@@ -95,15 +96,29 @@ function Vote() {
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center" }}>🗳️ Vote Now</h2>
 
-      {!electionActive && (
-        <div style={{
-          backgroundColor: "#ffe6e6",
-          padding: "10px",
-          borderRadius: "8px",
-          textAlign: "center",
-          margin: "10px 0"
-        }}>
-          Election is not active
+      {electionStatus && (
+        <div
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            textAlign: "center",
+            margin: "10px 0",
+            backgroundColor:
+              electionStatus.status === "Active"
+                ? "#d4edda"
+                : electionStatus.status === "Upcoming"
+                  ? "#fff3cd"
+                  : "#f8d7da"
+          }}
+        >
+          {electionStatus.status === "Active" &&
+            "🟢 Election Active"}
+
+          {electionStatus.status === "Upcoming" &&
+            "🟡 Election Upcoming"}
+
+          {electionStatus.status === "Completed" &&
+            "🔴 Election Completed"}
         </div>
       )}
 
@@ -147,26 +162,39 @@ function Vote() {
             </button> */}
             <button
               onClick={() => handleVote(c._id)}
-              disabled={hasVoted || !electionActive}
+              disabled={
+                hasVoted ||
+                electionStatus?.status !== "Active"
+              }
               style={{
                 padding: "10px 15px",
                 borderRadius: "8px",
                 border: "none",
-                cursor: (hasVoted || !electionActive) ? "not-allowed" : "pointer",
-                backgroundColor: (hasVoted || !electionActive) ? "gray" : "#4CAF50",
                 color: "white",
+                cursor:
+                  hasVoted ||
+                    electionStatus?.status !== "Active"
+                    ? "not-allowed"
+                    : "pointer",
+                backgroundColor:
+                  hasVoted ||
+                    electionStatus?.status !== "Active"
+                    ? "gray"
+                    : "#4CAF50",
               }}
             >
               {hasVoted
                 ? "Already Voted"
-                : !electionActive
-                  ? "Election Closed"
-                  : "Vote"}
+                : electionStatus?.status === "Upcoming"
+                  ? "Election Not Started"
+                  : electionStatus?.status === "Completed"
+                    ? "Election Closed"
+                    : "Vote"}
             </button>
           </div>
         ))}
       </div>
-    </div>
+    </div >
   );
 }
 

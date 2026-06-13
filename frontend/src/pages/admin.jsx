@@ -6,6 +6,7 @@ function Admin() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [candidates, setCandidates] = useState([]);
+  const [timeLeft, setTimeLeft] = useState("00h 00m 00s");
   const use_navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -14,6 +15,7 @@ function Admin() {
   });
 
   const [editId, setEditId] = useState(null);
+  const [electionStatus, setElectionStatus] = useState(null); //<------------------------------------
 
   useEffect(() => {
     checkAdmin();
@@ -28,6 +30,7 @@ function Admin() {
         window.location.href = "/vote";
       } else {
         fetchCandidates();
+        fetchElectionStatus(); //<------------------------------------------------------------
       }
 
     } catch (err) {
@@ -48,6 +51,7 @@ function Admin() {
       });
 
       alert("Election set successfully");
+      fetchElectionStatus(); //<------------------------------------------------------------
       setStartTime("");
       setEndTime("");
 
@@ -61,7 +65,75 @@ function Admin() {
     const res = await API.get("/candidate");
     setCandidates(res.data);
   };
+  // -------------------------------------------------------------------------------------------
+  const fetchElectionStatus = async () => {
+    try {
+      const res = await API.get(
+        "/candidate/election/status"
+      );
 
+      setElectionStatus(res.data);
+
+    } catch (error) {
+      console.log(
+        "Election Status Error:",
+        error
+      );
+    }
+  };
+  //--------------------------------------------------------------
+  useEffect(() => {
+
+    if (
+      !electionStatus?.endTime ||
+      electionStatus.status === "Completed"
+    ) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+
+      const now = new Date();
+      const targetTime =
+        electionStatus.status === "Upcoming"
+          ? new Date(electionStatus.startTime)
+          : new Date(electionStatus.endTime);
+
+      const difference =
+        targetTime - now;
+
+      if (difference <= 0) {
+        setTimeLeft("00h 00m 00s");
+        clearInterval(timer);
+        fetchElectionStatus();
+        return;
+      }
+
+      const hours = Math.floor(
+        difference / (1000 * 60 * 60)
+      );
+
+      const minutes = Math.floor(
+        (difference % (1000 * 60 * 60)) /
+        (1000 * 60)
+      );
+
+      const seconds = Math.floor(
+        (difference % (1000 * 60)) /
+        1000
+      );
+
+      setTimeLeft(
+        `${hours}h ${minutes}m ${seconds}s`
+      );
+
+    }, 1000);
+
+    return () => clearInterval(timer);
+
+  }, [electionStatus]);
+  //--------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
   // ADD
   const handleAdd = async () => {
     try {
@@ -115,17 +187,75 @@ function Admin() {
 
       </div>
       <h2>Admin Dashboard</h2>
+      {/* ------------------------------------------------------------------------------------------------- */}
 
+      {electionStatus && (
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "15px",
+            marginBottom: "20px",
+            borderRadius: "10px",
+            backgroundColor: "#f8f8f8"
+          }}
+        >
+          {/* ------------------------------------------------- */}
+          <h3>
+            {electionStatus.status === "Active" &&
+              "🟢 Election Active"}
+
+            {electionStatus.status === "Upcoming" &&
+              "🟡 Election Upcoming"}
+
+            {electionStatus.status === "Completed" &&
+              "🔴 Election Completed"}
+          </h3>
+
+          {electionStatus.status === "Upcoming" && (
+            <h4>
+              Starts In: {timeLeft}
+            </h4>
+          )}
+
+          {electionStatus.status === "Active" && (
+            <h4>
+              Ends In: {timeLeft}
+            </h4>
+          )}
+          {/* ----------------------------------------------------- */}
+
+          {electionStatus.startTime && (
+            <p>
+              Start Time:{" "}
+              {new Date(
+                electionStatus.startTime
+              ).toLocaleString()}
+            </p>
+          )}
+
+          {electionStatus.endTime && (
+            <p>
+              End Time:{" "}
+              {new Date(
+                electionStatus.endTime
+              ).toLocaleString()}
+            </p>
+          )}
+        </div>
+      )}
+      {/* ---------------------------------------------------------------------------------------------- */}
       {/* FORM */}
       <div style={{ marginBottom: "20px" }}>
         <div>
           <input
             type="datetime-local"
+            value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
           />
 
           <input
             type="datetime-local"
+            value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
           />
 
