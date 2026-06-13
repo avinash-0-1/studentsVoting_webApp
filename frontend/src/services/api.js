@@ -1,8 +1,10 @@
 import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/", //https://studentsvoting-webapp.onrender.com
-                                                         //http://localhost:3000/
+  baseURL: process.env.RENDER,
 });
 
 API.interceptors.request.use((req) => {
