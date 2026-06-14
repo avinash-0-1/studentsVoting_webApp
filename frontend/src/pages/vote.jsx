@@ -7,6 +7,7 @@ function Vote() {
   const [candidates, setCandidates] = useState([]);
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [studentName, setStudentName] = useState("");
   const [electionStatus, setElectionStatus] = useState(null);
   const navigate = useNavigate();
 
@@ -60,7 +61,9 @@ function Vote() {
   const checkUser = async () => {
     try {
       const res = await API.get("/user/profile");
+
       setHasVoted(res.data.response.isVoted);
+      setStudentName(res.data.response.name);
     } catch (err) {
       console.log(err);
     }
@@ -95,6 +98,9 @@ function Vote() {
   return (
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center" }}>🗳️ Vote Now</h2>
+      <p style={{ textAlign: "center" }}>
+        Welcome, <strong>{studentName}</strong>
+      </p>
 
       {electionStatus && (
         <div
@@ -146,20 +152,7 @@ function Vote() {
           >
             <h3>{c.name}</h3>
             <p>{c.party}</p>
-            {/* <button
-              onClick={() => handleVote(c._id)}
-              disabled={hasVoted}
-              style={{
-                padding: "10px 15px",
-                borderRadius: "8px",
-                border: "none",
-                cursor: hasVoted ? "not-allowed" : "pointer",
-                backgroundColor: hasVoted ? "gray" : "#4CAF50",
-                color: "white",
-              }}
-            >
-              {hasVoted ? "Already Voted" : "Vote"}
-            </button> */}
+
             <button
               onClick={() => handleVote(c._id)}
               disabled={

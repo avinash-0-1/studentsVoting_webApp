@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function Admin() {
   const [startTime, setStartTime] = useState("");
+  const [adminName, setAdminName] = useState("");
   const [endTime, setEndTime] = useState("");
   const [candidates, setCandidates] = useState([]);
   const [timeLeft, setTimeLeft] = useState("00h 00m 00s");
@@ -24,6 +25,7 @@ function Admin() {
   const checkAdmin = async () => {
     try {
       const res = await API.get("/user/profile");
+      setAdminName(res.data.response.name);
 
       if (res.data.response.role !== "admin") {
         alert("Access denied");
@@ -187,6 +189,9 @@ function Admin() {
 
       </div>
       <h2>Admin Dashboard</h2>
+      <p>
+        Logged in as: <strong>{adminName}</strong>
+      </p>
       {/* ------------------------------------------------------------------------------------------------- */}
 
       {electionStatus && (

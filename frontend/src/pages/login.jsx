@@ -68,32 +68,6 @@ function Login() {
     }
   };
 
-  // const handleLogin = async () => {
-
-  //   if (!data.username || !data.password) {
-  //     return alert("Please enter username and password");
-  //   }
-
-  //   try {
-  //     const res = await API.post("/user/login", data);
-
-  //     console.log("LOGIN RESPONSE:", res.data);
-
-  //     if (!res.data.token) {
-  //       return alert("Login failed: No token received");
-  //     }
-
-  //     localStorage.setItem("token", res.data.token);
-
-  //     alert("Login success");
-  //     navigate("/vote");
-
-  //   } catch (err) {
-  //     console.log("ERROR:", err.response?.data);
-  //     alert(err.response?.data?.message || "Login failed");
-  //   }
-  // };
-
   return (
     <div>
       <h2>Login</h2>
