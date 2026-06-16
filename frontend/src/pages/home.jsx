@@ -20,7 +20,6 @@ function Home() {
         onClick={() => navigate("/login")}
         style={{
           padding: "10px 20px",
-          cursor: "pointer"
         }}
       >
         Login as Student
@@ -30,7 +29,6 @@ function Home() {
         onClick={() => navigate("/signup")}
         style={{
           padding: "10px 20px",
-          cursor: "pointer"
         }}
       >
         Student Sign Up
@@ -40,7 +38,6 @@ function Home() {
         onClick={() => navigate("/admin-login")}
         style={{
           padding: "10px 20px",
-          cursor: "pointer"
         }}
       >
         Login as Admin

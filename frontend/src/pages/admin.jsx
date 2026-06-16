@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./Admin.css";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -183,69 +184,65 @@ function Admin() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="notebook-page">
       <div>
-        <button onClick={handleLogout}>LogOut</button>
+        <button className="sketch-btn" onClick={handleLogout}>LogOut</button>
 
       </div>
-      <h2>Admin Dashboard</h2>
-      <p>
-        Logged in as: <strong>{adminName}</strong>
+      <h1 className="notebook-title">
+        📖 CampusBallot Admin
+      </h1>
+      <p className="welcome-note">
+        ✏️ Welcome, {adminName}
       </p>
       {/* ------------------------------------------------------------------------------------------------- */}
 
       {electionStatus && (
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            backgroundColor: "#f8f8f8"
-          }}
-        >
-          {/* ------------------------------------------------- */}
-          <h3>
-            {electionStatus.status === "Active" &&
-              "🟢 Election Active"}
+        <div>
+          <div className="election-card">
+            {/* ------------------------------------------------- */}
+            <h3>
+              {electionStatus.status === "Active" &&
+                "🟢 Election Active"}
 
-            {electionStatus.status === "Upcoming" &&
-              "🟡 Election Upcoming"}
+              {electionStatus.status === "Upcoming" &&
+                "🟡 Election Upcoming"}
 
-            {electionStatus.status === "Completed" &&
-              "🔴 Election Completed"}
-          </h3>
+              {electionStatus.status === "Completed" &&
+                "🔴 Election Completed"}
+            </h3>
 
-          {electionStatus.status === "Upcoming" && (
-            <h4>
-              Starts In: {timeLeft}
-            </h4>
-          )}
+            {electionStatus.status === "Upcoming" && (
+              <h4>
+                Starts In: {timeLeft}
+              </h4>
+            )}
 
-          {electionStatus.status === "Active" && (
-            <h4>
-              Ends In: {timeLeft}
-            </h4>
-          )}
-          {/* ----------------------------------------------------- */}
+            {electionStatus.status === "Active" && (
+              <h4>
+                Ends In: {timeLeft}
+              </h4>
+            )}
+            {/* ----------------------------------------------------- */}
 
-          {electionStatus.startTime && (
-            <p>
-              Start Time:{" "}
-              {new Date(
-                electionStatus.startTime
-              ).toLocaleString()}
-            </p>
-          )}
+            {electionStatus.startTime && (
+              <p>
+                Start Time:{" "}
+                {new Date(
+                  electionStatus.startTime
+                ).toLocaleString()}
+              </p>
+            )}
 
-          {electionStatus.endTime && (
-            <p>
-              End Time:{" "}
-              {new Date(
-                electionStatus.endTime
-              ).toLocaleString()}
-            </p>
-          )}
+            {electionStatus.endTime && (
+              <p>
+                End Time:{" "}
+                {new Date(
+                  electionStatus.endTime
+                ).toLocaleString()}
+              </p>
+            )}
+          </div>
         </div>
       )}
       {/* ---------------------------------------------------------------------------------------------- */}
@@ -264,7 +261,7 @@ function Admin() {
             onChange={(e) => setEndTime(e.target.value)}
           />
 
-          <button onClick={handleSetElection}>
+          <button className="sketch-btn" onClick={handleSetElection}>
             Set Election
           </button>
         </div>
@@ -291,31 +288,42 @@ function Admin() {
       </div>
 
       {/* LIST */}
-      {candidates.map((c) => (
-        <div key={c._id}>
-          <h3>{c.name}</h3>
-          <p>{c.party}</p>
+      <div className="candidate-grid">
 
+        {candidates.map((c) => (
+          <div
+            key={c._id}
+            className="candidate-card"
+          >
+            <h3>👤 {c.name}</h3>
 
-          <button onClick={() => {
-            setEditId(c._id);
-            setForm({
-              name: c.name,
-              party: c.party,
-              age: c.age
-            });
-          }}>
-            Edit
-          </button>
+            <p>🏛️ {c.party}</p>
 
+            <button
+              className="sketch-btn"
+              onClick={() => {
+                setEditId(c._id);
+                setForm({
+                  name: c.name,
+                  party: c.party,
+                  age: c.age
+                });
+              }}
+            >
+              ✏️ Edit
+            </button>
 
-          <button onClick={() => handleDelete(c._id)}>
-            Delete
-          </button>
-        </div>
-      ))}
+            <button
+              className="sketch-btn"
+              onClick={() => handleDelete(c._id)}
+            >
+              🗑️ Delete
+            </button>
+          </div>
+        ))}
+
+      </div>
     </div>
-  );
+  )
 }
-
 export default Admin;

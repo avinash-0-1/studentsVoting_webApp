@@ -1,0 +1,128 @@
+/* --- DASHBOARD STRUCTURE --- */
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+    font-family: "Comic Sans MS", cursive;
+    background: #f8f1df;
+}
+
+.sidebar {
+    background: #fffdf7;
+    border-right: 3px solid #222;
+    padding: 30px 20px;
+    box-shadow: 4px 0px 0px #222;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- THEME WRAPPER (Main Content) --- */
+.notebook-page {
+    position: relative;
+    padding: 40px 60px 40px 80px; /* Extra left padding for the red line */
+    background-image: repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        rgba(0,0,255,.08) 32px
+    );
+    display: flex;
+    flex-direction: column;
+}
+
+.notebook-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 45px;
+    width: 3px;
+    background: #e63946;
+}
+
+/* --- DASHBOARD HEADER --- */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.notebook-title {
+    font-size: 3rem;
+    transform: rotate(-1deg);
+    margin: 0; /* Cleaned up margin for flexbox */
+}
+
+.welcome-note {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* --- STATS & CARDS --- */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.election-card {
+    background: #fffdf7;
+    border: 3px solid #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 4px 4px 0px #222;
+    transform: rotate(-0.3deg);
+}
+
+.candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.candidate-card {
+    background: #fffdf7;
+    border: 2px solid #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 4px 4px 0 #222;
+    transition: 0.2s;
+}
+
+.candidate-card:hover {
+    transform: translateY(-4px);
+}
+
+.candidate-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.candidate-card p {
+    margin-bottom: 15px;
+}
+
+/* --- BUTTONS --- */
+.sketch-btn {
+    background: #fff;
+    border: 2px solid #222;
+    padding: 8px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 #222;
+    transition: .15s;
+    font-family: inherit;
+    display: inline-block;
+}
+
+.sketch-btn:hover {
+    transform: translateY(-2px);
+}
+
+.sketch-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
