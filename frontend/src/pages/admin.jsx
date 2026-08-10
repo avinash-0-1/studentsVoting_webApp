@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Admin.css";
+import "./admin.css";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 
